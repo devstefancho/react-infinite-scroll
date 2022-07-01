@@ -18,18 +18,24 @@ export type Docs = {
 
 function useFetch(query: string, page: number) {
   const [data, setData] = useState<Docs[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const sendQuery = useCallback(async () => {
     console.log('current page is ', page);
     const endPoint = `https://openlibrary.org/search.json?q=${query}&page=${page}`;
+    setLoading(true);
     const { data }: { data: { docs: Docs[] } } = await axios.get(endPoint);
     setData((prev) => [...prev, ...data.docs]);
+    setLoading(false);
   }, [query, page]);
+
   useEffect(() => {
     sendQuery();
   }, [query, page]);
 
   return {
     data,
+    loading,
   };
 }
 

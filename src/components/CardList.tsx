@@ -1,6 +1,7 @@
-import { FC, useCallback, useRef } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 import { Docs } from '../hooks/useFetch';
+import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import CardItem from './CardItem';
 
 /* 바깥쪽에 두면 useCallback으로 감쌀수 없으므로, 계속 해서 콜백이 실행됨
@@ -13,35 +14,19 @@ const ob = new IntersectionObserver((entries) => {
 });
 */
 
-const CardList: FC<{ data: Docs[]; setPage: () => void }> = ({
+const CardList: FC<{ data: Docs[]; loadMore: () => void }> = ({
   data,
-  setPage,
+  loadMore,
 }) => {
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  const lastBookElementRef = useCallback((node: HTMLDivElement) => {
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-    }
-    observerRef.current = new IntersectionObserver((entries) => {
-      console.log('entries: ', entries);
-      if (entries[0].isIntersecting) {
-        console.log('load more page');
-        setPage();
-      }
-    });
-    if (node) {
-      observerRef.current.observe(node);
-    }
-  }, []);
+  const { lastItemRef } = useInfiniteScroll(loadMore);
 
   return (
     <StyledCardList>
       {data?.map((book, index) => {
         if (index === data.length - 1) {
           return (
-            <div ref={lastBookElementRef}>
-              <CardItem book={book} key={index} />
+            <div ref={lastItemRef} key={index}>
+              <CardItem book={book} />
             </div>
           );
         }
