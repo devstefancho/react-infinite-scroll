@@ -14,11 +14,11 @@ const ob = new IntersectionObserver((entries) => {
 });
 */
 
-const CardList: FC<{ data: Docs[]; loadMore: () => void }> = ({
+const CardList: FC<{ data: Docs[]; fetchMore: () => void }> = ({
   data,
-  loadMore,
+  fetchMore,
 }) => {
-  const { lastItemRef } = useInfiniteScroll(loadMore);
+  const { lastItemRef } = useInfiniteScroll(fetchMore);
 
   return (
     <StyledCardList>

@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-function useInfiniteScroll(loadMore: () => any) {
+function useInfiniteScroll(fetchMore: () => any) {
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   const lastItemRef = useCallback((node: HTMLDivElement) => {
@@ -8,12 +8,17 @@ function useInfiniteScroll(loadMore: () => any) {
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
+
+    // view port 기준으로 rootMargin 설정
+    const options: IntersectionObserverInit = {
+      rootMargin: '200% 0px',
+    };
     observerRef.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        console.log('load more page');
-        loadMore();
+        // fetch를 하기위한 callback
+        fetchMore();
       }
-    });
+    }, options);
     if (node) {
       observerRef.current.observe(node);
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CardList from './components/CardList';
 import Search from './components/Search';
 import Spinner from './components/Spinner';
@@ -11,7 +11,7 @@ function App() {
   return (
     <div className='App'>
       <Search setSearchText={setSearchText} />
-      <CardList data={data} loadMore={() => setPage((prev) => prev + 1)} />
+      <CardList data={data} fetchMore={() => setPage((prev) => prev + 1)} />
       {loading && <Spinner />}
     </div>
   );
